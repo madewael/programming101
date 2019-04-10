@@ -66,6 +66,9 @@
 </pre>
             </figure>
             
+            <p>In our first iteration the lexer will not support symbols with a length larger than 1 (e.g., <code>==</code>), or string literals. We add this functionality in a second pass. If we consider the grammar with theses simplifications we obtain the following symbols: <code>; , ( ) = { }  +  -  *  /  %  &lt; &gt; !</code>. Any of these symbols is always a token because they are not supposed to appear any where else: not in keywords, not in integers, not in identifiers. The same holds for whitespaces <code>\t</code>, <code>\n</code>, and <code>\r</code>, but these are also ignored.</p>
+
+            <p>The general approach for this simple lexer is to consume all characters from the input sequence <em>one by one</em>, hence the use of a queue. We accumulate all these characters into the <em>next token</em>. When we encounter either a symbol, a whitespace, or the end of the file (<code>EOF</code>), we know we processed a complete token and we remember it. If we just encountered a symbol, we need to remember this symbol as well.</p>
 
         </section>
 
