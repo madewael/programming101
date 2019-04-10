@@ -30,8 +30,21 @@ function buildToc() {
 
 function fetchCode($code) {
     const src = $code.getAttribute("data-src");
+
+    const from = parseInt($code.getAttribute("data-from"));
+    const to = parseInt($code.getAttribute("data-to"));
+
+    function partition(txt) {
+        if (!isNaN(from) && !isNaN(to)) {
+            return txt.split("\n").slice(from-1, to).join("\n");
+        } else {
+            return txt;
+        }
+    }
+
     fetch(src)
-        .then(res =>res.text())
+        .then(res => res.text())
+        .then(partition)
         .then(txt => $code.innerHTML = txt)
         .then(() => hljs.highlightBlock($code));
 }
