@@ -1,0 +1,39 @@
+body {
+    font-family: 'Source Code Pro', monospace;
+
+}
+
+main {
+    padding:10px 20px;
+    width: 600px;
+    text-align: justify;
+}
+
+aside {
+    padding:10px 20px;
+    width: 600px;
+    background-color: #4ed99c;
+    color: #eaeaea;
+    font-size: small;
+}
+
+aside nav li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+figcaption {
+    text-align: center;
+    border: 1px solid #eaeaea;
+    background-color: #4ed99c;
+    border-radius: 3px;
+}
+
+em {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border-radius: 4px;
+}
