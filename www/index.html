@@ -43,6 +43,13 @@
 
 
             <p>The programming language we will be building is very simple. It has only two (first-class) data types: strings and integers. Every program consists of a bunch (zero or more) <em>function-definitions</em>, followed by a single <em>expression</em>, and ends with a single <code>;</code>. This is shown in <em>The Grammar of our toy programming language.</em> Everything between <code>"</code> is to interpreted as literal text. <code>*</code>, <code>?</code>, and <code>|</code> are to be interpreted as <em>zero or more times</em>, <em>zero or one time</em>, <em>either the one or the other (or)</em>, respectively. Finally, <code>[ - ]</code> denotes a range, e.g., any small letter can be written as <code>["a"-"z"]</code>. All other constructs are called <em>non-terminals</em> and need to be looked up in the grammar. <code>block</code>, for instance, is defined as <code>"{" statement* "}"</code>: zero or more statements surrounded by curly braces, a <code>statement</code> can be either of 5 options, ... </p>
+            <figure>
+                <figcaption>The Grammar of our toy programming language.</figcaption>
+                <pre>
+<code class="plaintext" data-src="https://raw.githubusercontent.com/madewael/programming101/5fb94ba8635ba2b144b2b581909bbecd677f858a/programming-languages/TheToyLanguage.g4">
+</code>
+                </pre>
+            </figure>
 
         </section>
 
