@@ -21,3 +21,5 @@ class TokenBuffer {
         }
     }
 }
+
+module.exports = TokenBuffer;

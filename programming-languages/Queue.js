@@ -19,3 +19,5 @@ class Queue {
         return this.arr.shift();
     }
 }
+
+module.exports = Queue;
