@@ -27,18 +27,28 @@
 
         <section data-type="chapter" id="p01:intro">
             <h1>Intro</h1>
+
+            <p>In Part I: Programming Languages we will be building an extremely simple programming language from the ground up. The goal is to turn a sequence of characters, the <em>source code</em> into a useful computation.</p>
+
+            <p>A first step, is to turn source code into a sequence of tokens, much like humans can detect sentences in a text and words in a sentence. This is called lexing and is done by a lexer (<a href="#p01:lexing">see lexing</a>).</p>
+
+            <p>A second step is to turn the sequence of tokens into an <em>abstract syntax tree</em> (AST), much like humans expect a question (sentence) to be followed by an answer (sentence) or expect a sentence to at least contain a subject (word or words) and a predicate (word or words). This is called parsing and is done by a parser (<a href="#p01:parsing">see parsing</a>).</p>
+
+            <p>The third step depends on the kind of language.From an execution point of view, there are two kinds of languages: <em>interpreted languages</em> and <em>compiled languages</em>. An interpreted language uses an <em>interpreter</em> to directly perform the computation (<a href="#p01:interpretation">see interpretation</a>). A compiled language relies on a <em>compiler</em> to create new (executable) code (<a href="#p01:compilation">see compiling</a>). Both, the interpreter and the compiler needs to get their hands on an abstract syntax tree (AST).</p>
+
             <figure>
-                <figcaption>A Piece of Code</figcaption>
-                <pre>
-                    <code class="java"
-                          data-src="https://raw.githubusercontent.com/madewael/HowestPass/master/src/main/java/StartUp.java">
-                    </code>
-                </pre>
+                <figcaption>From source code to code execution.</figcaption>
+                <img src="assets/media/pl-flow.svg" alt="From source code to code execution."/>
             </figure>
+
+
+            <p>The programming language we will be building is very simple. It has only two (first-class) data types: strings and integers. Every program consists of a bunch (zero or more) <em>function-definitions</em>, followed by a single <em>expression</em>, and ends with a single <code>;</code>. This is shown in <em>The Grammar of our toy programming language.</em> Everything between <code>"</code> is to interpreted as literal text. <code>*</code>, <code>?</code>, and <code>|</code> are to be interpreted as <em>zero or more times</em>, <em>zero or one time</em>, <em>either the one or the other (or)</em>, respectively. Finally, <code>[ - ]</code> denotes a range, e.g., any small letter can be written as <code>["a"-"z"]</code>. All other constructs are called <em>non-terminals</em> and need to be looked up in the grammar. <code>block</code>, for instance, is defined as <code>"{" statement* "}"</code>: zero or more statements surrounded by curly braces, a <code>statement</code> can be either of 5 options, ... </p>
+
         </section>
 
         <section data-type="chapter" id="p01:lexing">
             <h1>Lexing</h1>
+
         </section>
 
         <section data-type="chapter" id="p01:parsing">
@@ -49,7 +59,7 @@
             <h1>Interpretation</h1>
         </section>
 
-        <section data-type="chapter" id="p01:Compilation">
+        <section data-type="chapter" id="p01:compilation">
             <h1>Compilation</h1>
         </section>
     </div>
