@@ -307,7 +307,133 @@
                 is</code> will be limited to <em>checking</em> whether a tokens is of the expected type and value,
                 whereas <code>ensure</code> will also <em>enforce</em> the expected condition by throwing a parse
                 error is the conditions are not met. Moreover, we make the expected value optional, which will
-                prove to come in handy as well...</p>
+                prove to come in handy as well... In the remainder of this text we will omit explicit references to
+                the simple dedicated parsers, i.e., the parsers for keywords and symbols.</p>
+
+            <figure>
+                <figcaption>Simplified <code>parseInteger</code> and <code>parseSemicolon</code>.</figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="34"
+                          data-to="45"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/c5df4d392da4d75b7bd77ed04d986fa92b8ad932/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+
+            <p>We now focus on our function definitions that may or may not precede the expression. In order the
+                parse a bunch of these definitions, we need to be able to at least parse one such function definition.
+                Hence, we need the dedicated parser <code>parseFunctionDefinition</code>. It very much resembles the
+                dedicated parser <code>parseProgram</code>, in that is a straightforward translation from the grammar
+                rule to executable code. The actual parsing of the parameter list and the body is delegated to the
+                dedicated parsers <code>parseParamList</code> and <code>parseBlock</code>, respectively.
+            </p>
+
+            <figure>
+                <figcaption>The dedicated parser <code>parseFunctionDefinition</code> is a straightforward
+                    translation from the grammar rule.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="35"
+                          data-to="48"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/382ea1d87b2b064c9078ee10ce9676c334b1c864/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>In their current implementations, <code>parseParamList</code> and <code>parseBlock</code> accept
+                anything between the first open and close brackets it encounters (round or curly), they ignore the
+                actual structure and return a simple list of un-parsed tokens. Hence, the only way to make them fail
+                is by having an open bracket that is never closed. In this case the queue will run out of tokens and
+                trow a parse error.</p>
+
+            <figure>
+                <figcaption><code>parseParamList</code> and <code>parseBlock</code> return the list of tokens between
+                    a set of brackets.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="35"
+                          data-to="48"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/382ea1d87b2b064c9078ee10ce9676c334b1c864/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>The grammar, however, states that programs with a list of these function
+                definitions. Hence, we could use <code>parseFunctionDefinition</code> to parse the first such
+                definition and return it as an element is a list. If there is no function definition, the parse would
+                fail because it expects to find the keyword <code>function</code> but will find an <code>integer</code>
+                token. We therefore wrap our code in a <code>try-catch</code>-block to recover from an
+                <em>more or less expected parse error</em>. When our parser reaches the catch block, we know the
+                code does not start with a proper function definition, hence it should start parsing the expression,
+                hence, the list of functions is empty.</p>
+
+            <figure>
+                <figcaption>Parse a zero or one function definitions and return them as a list.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="26"
+                          data-to="33"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/382ea1d87b2b064c9078ee10ce9676c334b1c864/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>When we run our current parser of some demo programs, we see that it works fine for programs that
+                have exactly one function definition followed by a literal integer as expression. However, we expected
+                our parser to also accept the programs it accepted before, i.e., the programs that cosnist of a
+                single literal integer without any functions. We observe, however, that parsing this integer fails.
+                Even though we know the program is correct, we still get the following error: <em>Parse error:
+                    expected a integer but got a symbol.</em> The parse error thus occurs during the execution of
+                <code>parseInteger</code>, <code>parseFunctionDefinition</code> and <code>parseFunctionDefinitionList
+                </code> worked fine.</p>
+
+            <p>So ... what went wrong? The problem with our dedicated parsers is that they
+                manipulate the queue. In programs that do not start with a function definition, we do <code>try</code>
+                to parse a function definition. When it fails, we return an empty list and continue to try and parse
+                an integer literal. Trying to parse the non-existing function definition, however, consumed the first
+                token from the queue: the integer. Because <code>parseFunctionDefinition</code> expected the keyword
+                <code>function</code> but received an <code>integer</code>-token, it fails fast. While <code>
+                    parseFunctionDefinitionList</code> is made to recover from this expected parse error, the harm is
+                already doe: the queue was changed and the integer was consumed, and is never to be found again.</p>
+
+            <p>A possible solution to this problem is to anticipate the destruction of the queue in those cases
+                where a parse error is to be expected. If we where to copy the contents of the queue before parsing,
+                and restore the queue to its original state if a parser error would occur, all would be fine. This is
+                realised by <code>tryParse</code>: it expects a (dedicated) parser and a queue and behaves exactly
+                as if the parser would have been called with the queue directly, i.e., <em>return</em> an AST node or
+                <em>throw</em> a parse error. When an AST node is returned, the queue will have changed.
+                In the case a parse error is thrown, however, the queue will be seemingly untouched.</p>
+
+            <figure>
+                <figcaption><code>tryParse</code> restores the contents of the queue in the case of a
+                    (parse) error during parsing.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="3"
+                          data-to="11"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/7497bd2b3ecaa808be7d2e6e0ccb38661644351c/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>We can now update <code>parseFunctionDefinitionList</code> such that it accepts any number of
+                function definitions, by trying to parse them in an infinite loop. When we exit the loop, we know
+                the last function definition has been successfully parsed, and the queue is restored to the state
+                right after this last function definition.</p>
+
+            <figure>
+                <figcaption><code>tryParse</code> restores the contents of the queue in the case of a
+                    (parse) error during parsing.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="36"
+                          data-to="46"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/f37a8f257feb72ccfb364fd79c90a7e574cddf45/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
 
         </section>
 
