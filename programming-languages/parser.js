@@ -34,12 +34,15 @@ function parseProgram(q) {
 }
 
 function parseFunctionDefinitionList(q) {
-    try {
-        const firstFunctionDefinition = tryParse(parseFunctionDefinition, q);
-        return [firstFunctionDefinition];
-    } catch (err) {
-        return [];
+    const functionDefinitions = [];
+    while (true) {
+        try {
+            functionDefinitions.push(tryParse(parseFunctionDefinition, q));
+        } catch (err) {
+            return functionDefinitions;
+        }
     }
+
 }
 
 // function_definition : 'function' Identifier '(' parameter_list ')' block ;
