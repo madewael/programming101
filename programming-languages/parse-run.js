@@ -2,14 +2,18 @@ const lex = require("./lexer");
 const parse = require("./parser");
 const fs = require('fs');
 
-fs.readFile("./demo-programs/sum.tpl", "utf8", (err, txt) => {
-    console.log(parse(lex(txt)));
-});
 
-fs.readFile("./demo-programs/func.tpl", "utf8", (err, txt) => {
-    console.log(parse(lex(txt)));
-});
+function tryParse(fn) {
+    fs.readFile(fn, "utf8", (err, txt) => {
+        try {
+            console.log(parse(lex(txt)));
+        } catch (err) {
+            console.log("ERR:", err.message);
+        }
+    });
+}
 
-fs.readFile("./demo-programs/while.tpl", "utf8", (err, txt) => {
-    console.log(parse(lex(txt)));
-});
+tryParse("./demo-programs/one.tpl");
+tryParse("./demo-programs/one2.tpl");
+tryParse("./demo-programs/one3.tpl");
+tryParse("./demo-programs/one4.tpl");
