@@ -5,13 +5,13 @@ body {
 
 main {
     padding:10px 20px;
-    width: 600px;
+    width: 800px;
     text-align: justify;
 }
 
 aside {
     padding:10px 20px;
-    width: 600px;
+    width: 800px;
     background-color: #4ed99c;
     color: #eaeaea;
     font-size: small;
