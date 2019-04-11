@@ -220,7 +220,7 @@
                 the grammar rules. Here, we parse a program, hence we expect a bunch of <em>function definitions</em>
                 (zero, one, or more) and a single <em>expression</em>. Each program ends with a <code>;</code> but
                 that is not of any meaning in an AST. Hence the name <em>abstract</em> syntax tree, not all concrete
-            syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;
+                syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;
                 </code> is needed to detect the end of the expression. What remains is to implement functions that
                 can parse (lists) of function definitions, that can parse expressions, and that can parse a <code>;
                 </code>.</p>
@@ -236,6 +236,55 @@
                           data-src="https://raw.githubusercontent.com/madewael/programming101/a23d28cbb3e7d9cec71a6f67af8c62454693389d/programming-languages/parser.js"></code>
                 </pre>
             </figure>
+
+
+            <p>We updated our <code>Queue</code> to throw an error whenever <code>peek</code> or
+                <code>consume</code> is called on an empty queue. The code can be seen <a
+                        href="https://github.com/madewael/programming101/blob/2b7a1d6945ea63b2eea318cb2697491bca8c047a/programming-languages/Queue.js">here</a>.
+                Because the update is trivial, the new version is omitted from the main text.</p>
+
+            <p>A more important update is that of the dedicated parser <code>parseProgram</code> which now delegates
+                its work to an auxiliary parser and two dedicated parsers: <code>parseFunctionDefinitionList</code>,
+                <code>parseExpression </code>, and <code>parseSemicolon</code>, respectively. Then, it combines the
+                results into a new AST node that represents the complete program. Not that the expected semicolon is
+                effectively parsed, but it is ignored afterwards. Finally, we check if the queue is empty, if not, we
+                have found an illegal program and we throw a parse error.</p>
+
+            <figure>
+                <figcaption>The the dedicated parser <code>parseProgram</code> delegates its work and produces an
+                    AST-node for the complete program.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="9"
+                          data-to="24"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/2b7a1d6945ea63b2eea318cb2697491bca8c047a/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>For now, an implementation for <code>parseFunctionDefinitionList</code> is omitted. Hence, only
+                programs without any functions are accepted. This is, if <code>parseExpression</code> where to be
+                implemented completely. We again limit ourselves here, and only accept literal integer expressions.
+                To do so, <code>parseExpression</code> delegates its work to <code>parseInteger</code>. This is our
+                first fully functional dedicated parser: a literal integer expression always consists of exactly one
+                lexer token, and it has to be of type <code>integer</code>. If this is the case, we transform the lexer
+                token in an AST node of type <code>integer</code>. The value we assign to this node is the value we
+                obtain, from the token. Conceptually this is a big step, in practice almost nothing changes here.
+                Finally, it is important to note that out (dedicated) parser <em>throws a parse error</em>. When you
+                want (or need) to parse an integer and you find something else, it is useless for <em>this
+                    (dedicated) parser</em> to continue. We will see later how en when we can recover from parse errors.
+            </p>
+
+            <figure>
+                <figcaption>The dedicated parser <code>parseInteger</code>.</figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="34"
+                          data-to="43"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/2b7a1d6945ea63b2eea318cb2697491bca8c047a/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
         </section>
 
         <section data-type="chapter" id="p01:interpretation">
