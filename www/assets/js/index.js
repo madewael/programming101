@@ -52,6 +52,7 @@ function fetchCode($code) {
 function init() {
     console.log("DOMContentLoaded");
     document.querySelectorAll("figure pre code[data-src]").forEach(fetchCode);
+    hljs.initHighlightingOnLoad();
     buildToc();
 }
 
