@@ -10,6 +10,14 @@ function tryParse(parser, q) {
     }
 }
 
+function parseOptional(parser, q) {
+    try {
+        return tryParse(parser, q);
+    } catch (err) {
+        return false;
+    }
+}
+
 function parse(tokens) {
     const q = new Queue(tokens);
     return parseProgram(q);
@@ -95,7 +103,7 @@ function parseBlock(q) {
 
 function parseStatement(q) {
     const parsers = [
-        // todo: parseVariableDefinition
+        parseVariableDefinition,
         parseVariableAssignment,
         parseWhileStatement,
         parseReturnStatement,
@@ -110,6 +118,25 @@ function parseStatement(q) {
         }
     }
     throw new Error("Parser error: un-parsable statement");
+}
+
+function parseVariableDefinition(q) {
+    function parseInitValue(q) {
+        q.consume().ensure("symbol", "=");
+        return parseExpression(q);
+    }
+
+    q.consume().ensure("keyword", "let");
+    const variable = parseIdentifier(q).value;
+    const initValue = parseOptional(parseInitValue, q);
+    q.consume().ensure("symbol", ";");
+
+    return {
+        type: "variable-definition",
+        variable: variable,
+        initValue: initValue
+    }
+
 }
 
 function parseVariableAssignment(q) {

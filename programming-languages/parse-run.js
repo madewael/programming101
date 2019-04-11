@@ -13,10 +13,11 @@ function tryParse(fn) {
     });
 }
 
-/*tryParse("./demo-programs/one.tpl");
+tryParse("./demo-programs/one.tpl");
 tryParse("./demo-programs/one2.tpl");
 tryParse("./demo-programs/one3.tpl");
 tryParse("./demo-programs/one4.tpl");
 tryParse("./demo-programs/one5.tpl");
-tryParse("./demo-programs/func2.tpl");*/
+tryParse("./demo-programs/func2.tpl");
 tryParse("./demo-programs/while2.tpl");
+tryParse("./demo-programs/var.tpl");
