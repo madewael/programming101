@@ -1,5 +1,15 @@
 const Queue = require("./Queue");
 
+function tryParse(parser, q) {
+    const old = q.arr.slice();
+    try {
+        return parser(q);
+    } catch (err) {
+        q.arr = old;
+        throw err;
+    }
+}
+
 function parse(tokens) {
     const q = new Queue(tokens);
     return parseProgram(q);
@@ -25,7 +35,7 @@ function parseProgram(q) {
 
 function parseFunctionDefinitionList(q) {
     try {
-        const firstFunctionDefinition = parseFunctionDefinition(q);
+        const firstFunctionDefinition = tryParse(parseFunctionDefinition, q);
         return [firstFunctionDefinition];
     } catch (err) {
         return [];
