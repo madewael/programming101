@@ -208,6 +208,34 @@
 
         <section data-type="chapter" id="p01:parsing">
             <h1>Parsing</h1>
+            <p> The main job of a parser is to turn the sequence of tokens into a more structured representation
+                which is called the <em>abstract syntax tree</em> (AST). While doing so, the parser verifies whether
+                the input has a correct structure, i.e., checking if the input matches the grammar.</p>
+
+            <p>As state above, the input of a parser is a sequence of tokens. The result should be an AST that
+                represents the full program. The main function <code>parse</code> turns the sequence of tokens into a
+                queue of tokens and delegates to the dedicated parser <code>parseProgram</code>. For now the
+                dedicated parser <code>parseProgram</code> does not do much, except show the structure of all
+                dedicated parsers. Each dedicated parser accepts a queue and returns a structure that matches one of
+                the grammar rules. Here, we parse a program, hence we expect a bunch of <em>function definitions</em>
+                (zero, one, or more) and a single <em>expression</em>. Each program ends with a <code>;</code> but
+                that is not of any meaning in an AST. Hence the name <em>abstract</em> syntax tree, not all concrete
+            syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;
+                </code> is needed to detect the end of the expression. What remains is to implement functions that
+                can parse (lists) of function definitions, that can parse expressions, and that can parse a <code>;
+                </code>.</p>
+
+
+            <figure>
+                <figcaption>The main function <code>parse</code> and the dedicated parser <code>parseProgram</code>.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="3"
+                          data-to="15"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/a23d28cbb3e7d9cec71a6f67af8c62454693389d/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
         </section>
 
         <section data-type="chapter" id="p01:interpretation">
