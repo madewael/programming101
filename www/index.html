@@ -281,9 +281,33 @@
                     <code class="javascript"
                           data-from="34"
                           data-to="43"
-                          data-src="https://raw.githubusercontent.com/madewael/programming101/2b7a1d6945ea63b2eea318cb2697491bca8c047a/programming-languages/parser.js"></code>
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/a145897865dbd4f3605e9b60b8dfe7770f2c20b2/programming-languages/parser.js"></code>
                 </pre>
             </figure>
+
+            <p>The implementation for the dedicated parser <code>parseSemicolon</code> is if possible even more
+                simple: we consume the next token and verify its type and value. Here, we expect it to the symbol
+                <code>;</code>. If this is not the case, we encountered a parse error, hence the <code>throw</code>.
+                We return the token, however this is not strictly necessary. As you can imagine, this kind of
+                dedicated parser will have to be written for each and every <em>symbol</em> and <em>keyword</em>.
+                Hence, we will move the logic to the <code>Token</code>, which will simplify the parsers a bit.
+            </p>
+
+            <figure>
+                <figcaption>The dedicated parser <code>parseSemicolon</code>.</figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="45"
+                          data-to="51"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/a145897865dbd4f3605e9b60b8dfe7770f2c20b2/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>We add two functions to our <code>Tokens</code>:<code>is</code> and <code>ensure</code>. <code>
+                is</code> will be limited to <em>checking</em> whether a tokens is of the expected type and value,
+                whereas <code>ensure</code> will also <em>enforce</em> the expected condition by throwing a parse
+                error is the conditions are not met. Moreover, we make the expected value optional, which will
+                prove to come in handy as well...</p>
 
         </section>
 
