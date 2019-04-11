@@ -75,17 +75,79 @@ function parseParamList(q) {
 }
 
 function parseBlock(q) {
-    const res = [];
-    let curr = q.consume();
-    curr.ensure("symbol", "{"); // start with open curly bracket
+    q.consume().ensure("symbol", "{"); // start with open curly bracket
 
-    curr = q.consume();
-    while (!curr.is("symbol", "}")) { // continue until close curly bracket
-        res.push(curr); // ignore structure in between
-        curr = q.consume();
+    const statements = [];
+    while (true) {
+        try {
+            statements.push(tryParse(parseStatement, q));
+        } catch (err) {
+            break;
+        }
     }
+    q.consume().ensure("symbol", "}"); // end with close curly bracket
 
-    return res;
+    return {
+        type: "block",
+        statements: statements
+    }
+}
+
+function parseStatement(q) {
+    const parsers = [
+        // todo: parseVariableDefinition
+        parseVariableAssignment,
+        parseWhileStatement,
+        parseReturnStatement,
+        parseBlock
+    ];
+
+    for (const parser of parsers) {
+        try {
+            return tryParse(parser, q);
+        } catch (err) {
+            // parse error, hence, try next parser ...
+        }
+    }
+    throw new Error("Parser error: un-parsable statement");
+}
+
+function parseVariableAssignment(q) {
+    const variable = parseIdentifier(q).value;
+    q.consume().ensure("symbol", "=");
+    const value = parseExpression(q);
+    q.consume().ensure("symbol", ";");
+
+    return {
+        type: "variable-assignment",
+        variable: variable,
+        value : value
+    }
+}
+
+function parseWhileStatement(q) {
+    q.consume().ensure("keyword", "while");
+    q.consume().ensure("symbol", "(");
+    const condition = parseExpression(q).value;
+    q.consume().ensure("symbol", ")");
+    const body = parseStatement(q);
+
+    return {
+        type: "while-statement",
+        condition: condition,
+        body : body
+    }
+}
+
+function parseReturnStatement(q) {
+    q.consume().ensure("keyword", "return");
+    const value = parseExpression(q).value;
+    q.consume().ensure("symbol", ";");
+
+    return {
+        type: "return-statement",
+        value: value
+    }
 }
 
 function parseExpression(q) {
