@@ -18,6 +18,41 @@ function parseOptional(parser, q) {
     }
 }
 
+function parseSequence(parser, q, start = false, stop = false, sep = false) {
+    function wrapWithSeparatorParsing(parser) {
+        let first = true;
+        return function (q) {
+            if (first) {
+                first = false;
+            } else {
+                q.consume().ensure("symbol", sep);
+            }
+            return parser(q);
+        }
+    }
+
+    parser = sep ? wrapWithSeparatorParsing(parser) : parser;
+
+    if (start) {
+        q.consume().ensure("symbol", start);
+    }
+
+    const sequence = [];
+    while (true) {
+        try {
+            sequence.push(tryParse(parser, q));
+        } catch (err) {
+            break;
+        }
+    }
+
+    if (stop) {
+        q.consume().ensure("symbol", stop);
+    }
+
+    return sequence;
+}
+
 function parse(tokens) {
     const q = new Queue(tokens);
     return parseProgram(q);
@@ -26,7 +61,7 @@ function parse(tokens) {
 // program             : function_definition* expression ';'                ;
 function parseProgram(q) {
     const functions = parseFunctionDefinitionList(q);
-    const expression =  parseExpression(q);
+    const expression = parseExpression(q);
     parseSemicolon(q); // ignore, but do parse !
 
     if (q.hasMore()) {
@@ -42,15 +77,7 @@ function parseProgram(q) {
 }
 
 function parseFunctionDefinitionList(q) {
-    const functionDefinitions = [];
-    while (true) {
-        try {
-            functionDefinitions.push(tryParse(parseFunctionDefinition, q));
-        } catch (err) {
-            return functionDefinitions;
-        }
-    }
-
+    return parseSequence(parseFunctionDefinition, q);
 }
 
 // function_definition : 'function' Identifier '(' parameter_list ')' block ;
@@ -61,57 +88,20 @@ function parseFunctionDefinition(q) {
     const body = parseBlock(q);
 
     return {
-        type :"function-def",
-        name : name,
-        paramList : paramList,
-        body : body
+        type: "function-def",
+        name: name,
+        paramList: paramList,
+        body: body
     }
 }
 
 function parseParamList(q) {
-    let firstParam = true;
-    function parseParam(q) {
-        if (firstParam) {
-            firstParam = false;
-        } else {
-            q.consume().ensure("symbol", ",");
-        }
-        return parseIdentifier(q).value;
-    }
-
-
-    q.consume().ensure("symbol", "("); // start with open curly bracket
-
-    const params = [];
-    while (true) {
-        try {
-            params.push(tryParse(parseParam, q));
-        } catch (err) {
-            break;
-        }
-    }
-    q.consume().ensure("symbol", ")"); // end with close curly bracket
-
-    return params;
+    return parseSequence(parseIdentifier, q, "(", ")", ",")
+        .map(identifier => identifier.value);
 }
 
 function parseBlock(q) {
-    q.consume().ensure("symbol", "{"); // start with open curly bracket
-
-    const statements = [];
-    while (true) {
-        try {
-            statements.push(tryParse(parseStatement, q));
-        } catch (err) {
-            break;
-        }
-    }
-    q.consume().ensure("symbol", "}"); // end with close curly bracket
-
-    return {
-        type: "block",
-        statements: statements
-    };
+    return parseSequence(parseStatement, q, "{", "}");
 }
 
 function parseStatement(q) {
@@ -161,7 +151,7 @@ function parseVariableAssignment(q) {
     return {
         type: "variable-assignment",
         variable: variable,
-        value : value
+        value: value
     }
 }
 
@@ -175,7 +165,7 @@ function parseWhileStatement(q) {
     return {
         type: "while-statement",
         condition: condition,
-        body : body
+        body: body
     }
 }
 
