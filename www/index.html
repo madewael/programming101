@@ -161,13 +161,13 @@
                 <figcaption>The output of lexing a simple example program.</figcaption>
                 <pre>
                     <code class="javascript"
-                    data-src="https://raw.githubusercontent.com/madewael/programming101/4576c842baaf504017b85df6c5b492d9d6b4e5d6/programming-languages/demo-programs/func.tpl">
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/4576c842baaf504017b85df6c5b492d9d6b4e5d6/programming-languages/demo-programs/func.tpl">
                     </code>
                 </pre>
             </figure>
 
             <p>When we pass the source code of the mini program above into our <code>lex</code> function, we get the
-            following result.</p>
+                following result.</p>
 
             <figure>
                 <figcaption>The output of lexing a simple example program (see above).</figcaption>
@@ -196,7 +196,14 @@
                 </code></pre>
             </figure>
 
+            <h2>Extending the Lexer</h2>
 
+            <p>You can continue reading here if you want the expand the functionality of the lexer a bit more. We
+                will be adding extra keywords which requires almost no work. We will add support for symbols that
+                consist of more than one character, which will take a bit more effort. And finally we will add
+                support for string literals, which will prove to be the most difficult endeavour of the three. If you
+                want to get your first programming language up, and more importantly, running as soon as possible,
+                you should skip this section and continue reading about <a href="#p01:parsing">parsing</a>.</p>
         </section>
 
         <section data-type="chapter" id="p01:parsing">
