@@ -5,22 +5,24 @@
     <title>Programming 101</title>
 
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
 </head>
 <body>
 <aside>
-    <nav data-type="toc" class="toc" id="toc">
-
-    </nav>
+    <nav data-type="toc" class="toc" id="toc"></nav>
 </aside>
 <main>
     <h1>Programming 101</h1>
 
-    <p>Programming101 presents a collection of articles that each explain a computer science topic by building an executable toy version. Hence, the focus is always understandability over completeness.</p>
+    <p>Programming101 presents a collection of articles that each explain a computer science topic by building an
+        executable toy version. Hence, the focus is always understandability over completeness.</p>
 
-    <p>The first part tackles <em>programming languages</em>. Foremost because it covers by background and education, but also because it form the basics for further articles. When we build a <em>relational database</em> in Part II we will want to use <em>SQL</em> to query it. Well, SQL is a <em>domain specific programming language</em> (DSL) which will need a parser and an interpreter...</p>
+    <p>The first part tackles <em>programming languages</em>. Foremost because it covers by background and education,
+        but also because it form the basics for further articles. When we build a <em>relational database</em> in Part
+        II we will want to use <em>SQL</em> to query it. Well, SQL is a <em>domain specific programming language</em>
+        (DSL) which will need a parser and an interpreter...</p>
 
     <div data-type="part" class="part" id="part01">
         <h1>Part I : Programming Languages</h1>
@@ -28,13 +30,25 @@
         <section data-type="chapter" id="p01:intro">
             <h1>Intro</h1>
 
-            <p>In Part I: Programming Languages we will be building an extremely simple programming language from the ground up. The goal is to turn a sequence of characters, the <em>source code</em> into a useful computation.</p>
+            <p>In Part I: Programming Languages we will be building an extremely simple programming language from the
+                ground up. The goal is to turn a sequence of characters, the <em>source code</em> into a useful
+                computation.</p>
 
-            <p>A first step, is to turn source code into a sequence of tokens, much like humans can detect sentences in a text and words in a sentence. This is called lexing and is done by a lexer (<a href="#p01:lexing">see lexing</a>).</p>
+            <p>A first step, is to turn source code into a sequence of tokens, much like humans can detect sentences in
+                a text and words in a sentence. This is called lexing and is done by a lexer (<a href="#p01:lexing">see
+                    lexing</a>).</p>
 
-            <p>A second step is to turn the sequence of tokens into an <em>abstract syntax tree</em> (AST), much like humans expect a question (sentence) to be followed by an answer (sentence) or expect a sentence to at least contain a subject (word or words) and a predicate (word or words). This is called parsing and is done by a parser (<a href="#p01:parsing">see parsing</a>).</p>
+            <p>A second step is to turn the sequence of tokens into an <em>abstract syntax tree</em> (AST), much like
+                humans expect a question (sentence) to be followed by an answer (sentence) or expect a sentence to at
+                least contain a subject (word or words) and a predicate (word or words). This is called parsing and is
+                done by a parser (<a href="#p01:parsing">see parsing</a>).</p>
 
-            <p>The third step depends on the kind of language.From an execution point of view, there are two kinds of languages: <em>interpreted languages</em> and <em>compiled languages</em>. An interpreted language uses an <em>interpreter</em> to directly perform the computation (<a href="#p01:interpretation">see interpretation</a>). A compiled language relies on a <em>compiler</em> to create new (executable) code (<a href="#p01:compilation">see compiling</a>). Both, the interpreter and the compiler needs to get their hands on an abstract syntax tree (AST).</p>
+            <p>The third step depends on the kind of language.From an execution point of view, there are two kinds of
+                languages: <em>interpreted languages</em> and <em>compiled languages</em>. An interpreted language uses
+                an <em>interpreter</em> to directly perform the computation (<a href="#p01:interpretation">see
+                    interpretation</a>). A compiled language relies on a <em>compiler</em> to create new (executable)
+                code (<a href="#p01:compilation">see compiling</a>). Both, the interpreter and the compiler needs to get
+                their hands on an abstract syntax tree (AST).</p>
 
             <figure>
                 <figcaption>From source code to code execution.</figcaption>
@@ -42,11 +56,22 @@
             </figure>
 
 
-            <p>The programming language we will be building is very simple. It has only two (first-class) data types: strings and integers. Every program consists of a bunch (zero or more) <em>function-definitions</em>, followed by a single <em>expression</em>, and ends with a single <code>;</code>. This is shown in <em>The Grammar of our toy programming language.</em> Everything between <code>"</code> is to interpreted as literal text. <code>*</code>, <code>?</code>, and <code>|</code> are to be interpreted as <em>zero or more times</em>, <em>zero or one time</em>, <em>either the one or the other (or)</em>, respectively. Finally, <code>[ - ]</code> denotes a range, e.g., any small letter can be written as <code>["a"-"z"]</code>. All other constructs are called <em>non-terminals</em> and need to be looked up in the grammar. <code>block</code>, for instance, is defined as <code>"{" statement* "}"</code>: zero or more statements surrounded by curly braces, a <code>statement</code> can be either of 5 options, ... </p>
+            <p>The programming language we will be building is very simple. It has only two (first-class) data types:
+                strings and integers. Every program consists of a bunch (zero or more) <em>function-definitions</em>,
+                followed by a single <em>expression</em>, and ends with a single <code>;</code>. This is shown in <em>The
+                    Grammar of our toy programming language.</em> Everything between <code>"</code> is to interpreted as
+                literal text. <code>*</code>, <code>?</code>, and <code>|</code> are to be interpreted as <em>zero or
+                    more times</em>, <em>zero or one time</em>, <em>either the one or the other (or)</em>, respectively.
+                Finally, <code>[ - ]</code> denotes a range, e.g., any small letter can be written as
+                <code>["a"-"z"]</code>. All other constructs are called <em>non-terminals</em> and need to be looked up
+                in the grammar. <code>block</code>, for instance, is defined as <code>"{" statement* "}"</code>: zero or
+                more statements surrounded by curly braces, a <code>statement</code> can be either of 5 options, ...
+            </p>
             <figure>
                 <figcaption>The Grammar of our toy programming language.</figcaption>
                 <pre>
-<code class="plaintext" data-src="https://raw.githubusercontent.com/madewael/programming101/5fb94ba8635ba2b144b2b581909bbecd677f858a/programming-languages/TheToyLanguage.g4">
+<code class="plaintext"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/5fb94ba8635ba2b144b2b581909bbecd677f858a/programming-languages/TheToyLanguage.g4">
 </code>
                 </pre>
             </figure>
@@ -55,29 +80,83 @@
 
         <section data-type="chapter" id="p01:lexing">
             <h1>Lexing</h1>
-            <p>In computer science, a <em>lexer</em> is a program that converts a sequence of characters into a sequence of tokens. Each token is a part of the original sequence to which the lexer assigns a meaning. For our toy programming language we will want to start with writing a lexer. This lexer will convert a sequence of characters into <em>symbols</em>, <em>keywords</em>, <em>literals</em>, and <em>identifiers</em>. At the same time, our lexer will ignore all white space.</p>
+            <p>In computer science, a <em>lexer</em> is a program that converts a sequence of characters into a sequence
+                of tokens. Each token is a part of the original sequence to which the lexer assigns a meaning. For our
+                toy programming language we will want to start with writing a lexer. This lexer will convert a sequence
+                of characters into <em>symbols</em>, <em>keywords</em>, <em>literals</em>, and <em>identifiers</em>. At
+                the same time, our lexer will ignore all white space.</p>
 
             <p>The main data structure we will be using in lexing (and in parsing) is the <code>Queue</code>.</p>.
             <figure>
                 <figcaption>A simple implementation of queue, to expose common lexing/parsing terminology .</figcaption>
                 <pre>
-<code class="javascript" data-src="https://raw.githubusercontent.com/madewael/programming101/e687160475630e13c5fb157534827dd714bf9c9d/programming-languages/Queue.js">
+<code class="javascript"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/e687160475630e13c5fb157534827dd714bf9c9d/programming-languages/Queue.js">
 </code>
 </pre>
             </figure>
 
-            <p>In our first iteration the lexer will not support symbols with a length larger than 1 (e.g., <code>==</code>), or string literals. We add this functionality in a second pass. If we consider the grammar with theses simplifications we obtain the following symbols: <code>; , ( ) = { }  +  -  *  /  %  &lt; &gt; !</code>. Any of these symbols is always a token because they are not supposed to appear any where else: not in keywords, not in integers, not in identifiers. The same holds for whitespaces <code>\t</code>, <code>\n</code>, and <code>\r</code>, but these are also ignored.</p>
+            <p>In our first iteration the lexer will not support symbols with a length larger than 1 (e.g.,
+                <code>==</code>), or string literals. We add this functionality in a second pass. If we consider the
+                grammar with theses simplifications we obtain the following symbols: <code>; , ( ) = { } + - * / % &lt;
+                    &gt; !</code>. Any of these symbols is always a token because they are not supposed to appear any
+                where else: not in keywords, not in integers, not in identifiers. The same holds for whitespaces <code>\t</code>,
+                <code>\n</code>, and <code>\r</code>, but these are also ignored.</p>
 
-            <p>The general approach for this simple lexer is to consume all characters from the input sequence <em>one by one</em>, hence the use of a queue. We accumulate all these characters into the <em>next token</em>. When we encounter either a symbol, a whitespace, or the end of the file (<code>EOF</code>), we know we processed a complete token and we remember it. If we just encountered a symbol, we need to remember this symbol as well.</p>
+            <p>The general approach for this simple lexer is to consume all characters from the input sequence <em>one
+                by one</em>, hence the use of a queue. We accumulate all these characters into the <em>next token</em>.
+                When we encounter either a symbol, a whitespace, or the end of the file (<code>EOF</code>), we know we
+                processed a complete token and we remember it. If we just encountered a symbol, we need to remember this
+                symbol as well.</p>
 
             <figure>
-                <figcaption>The auxiliary data structure <code>TokenBuffer</code> is used to keep track of all processed tokens, and the token currently being processed.</figcaption>
+                <figcaption>The auxiliary data structure <code>TokenBuffer</code> is used to keep track of all processed
+                    tokens, and the token currently being processed.
+                </figcaption>
                 <pre>
 <code class="javascript"
       data-src="https://raw.githubusercontent.com/madewael/programming101/f87dbe6c83fc7e1a072c637df6d390c7f9643ec7/programming-languages/TokenBuffer.js">
 </code>
 </pre>
             </figure>
+
+            <figure>
+                <figcaption>The function <code>lex</code> processes characters one by one.</figcaption>
+                <pre>
+<code class="javascript"
+      data-from="27"
+      data-to="45"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/8ef35ac44c6f607df3457116a0e0a85b365caa68/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>The function <code>determineTokenType</code> decides whether a string can be interpreted as
+                    a <em>keyword</em>, a <em>integer</em>, or a <em>identifier</em>.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="17"
+      data-to="25"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/8ef35ac44c6f607df3457116a0e0a85b365caa68/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>The predicates for <em>keyword</em>, a <em>whitespace</em>, or a <em>identifier</em> are
+                    simple.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="5"
+      data-to="15"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/8ef35ac44c6f607df3457116a0e0a85b365caa68/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
 
         </section>
 
