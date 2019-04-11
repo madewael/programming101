@@ -157,6 +157,45 @@
 </pre>
             </figure>
 
+            <figure>
+                <figcaption>The output of lexing a simple example program.</figcaption>
+                <pre>
+                    <code class="javascript"
+                    data-src="https://raw.githubusercontent.com/madewael/programming101/4576c842baaf504017b85df6c5b492d9d6b4e5d6/programming-languages/demo-programs/func.tpl">
+                    </code>
+                </pre>
+            </figure>
+
+            <p>When we pass the source code of the mini program above into our <code>lex</code> function, we get the
+            following result.</p>
+
+            <figure>
+                <figcaption>The output of lexing a simple example program (see above).</figcaption>
+                <pre><code class="javascript">
+[ Token { type: 'keyword', value: 'function' },
+  Token { type: 'identifier', value: 'foo' },
+  Token { type: 'symbol', value: '(' },
+  Token { type: 'identifier', value: 'a' },
+  Token { type: 'symbol', value: ',' },
+  Token { type: 'identifier', value: 'b' },
+  Token { type: 'symbol', value: ')' },
+  Token { type: 'symbol', value: '{' },
+  Token { type: 'keyword', value: 'return' },
+  Token { type: 'identifier', value: 'a' },
+  Token { type: 'symbol', value: '+' },
+  Token { type: 'identifier', value: 'b' },
+  Token { type: 'symbol', value: ';' },
+  Token { type: 'symbol', value: '}' },
+  Token { type: 'identifier', value: 'foo' },
+  Token { type: 'symbol', value: '(' },
+  Token { type: 'integer', value: 1 },
+  Token { type: 'symbol', value: ',' },
+  Token { type: 'integer', value: 2 },
+  Token { type: 'symbol', value: ')' },
+  Token { type: 'symbol', value: ';' } ]
+                </code></pre>
+            </figure>
+
 
         </section>
 
