@@ -69,17 +69,30 @@ function parseFunctionDefinition(q) {
 }
 
 function parseParamList(q) {
-    const res = [];
-    let curr = q.consume();
-    curr.ensure("symbol", "("); // start with open round bracket
-
-    curr = q.consume();
-    while (!curr.is("symbol", ")")) { // continue until close round bracket
-        res.push(curr); // ignore structure in between
-        curr = q.consume();
+    let firstParam = true;
+    function parseParam(q) {
+        if (firstParam) {
+            firstParam = false;
+        } else {
+            q.consume().ensure("symbol", ",");
+        }
+        return parseIdentifier(q).value;
     }
 
-    return res;
+
+    q.consume().ensure("symbol", "("); // start with open curly bracket
+
+    const params = [];
+    while (true) {
+        try {
+            params.push(tryParse(parseParam, q));
+        } catch (err) {
+            break;
+        }
+    }
+    q.consume().ensure("symbol", ")"); // end with close curly bracket
+
+    return params;
 }
 
 function parseBlock(q) {
@@ -98,7 +111,7 @@ function parseBlock(q) {
     return {
         type: "block",
         statements: statements
-    }
+    };
 }
 
 function parseStatement(q) {
