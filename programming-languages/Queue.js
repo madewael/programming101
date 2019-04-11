@@ -12,10 +12,16 @@ class Queue {
     }
 
     peek() {
+        if (!this.hasMore()) {
+            throw new Error("Empty queue, cannot peek.")
+        }
         return this.arr[0];
     }
 
     consume() {
+        if (!this.hasMore()) {
+            throw new Error("Empty queue, cannot consume.")
+        }
         return this.arr.shift();
     }
 }
