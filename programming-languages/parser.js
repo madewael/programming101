@@ -24,7 +24,55 @@ function parseProgram(q) {
 }
 
 function parseFunctionDefinitionList(q) {
-    return []; // todo: implement (now only accept programs without functions.
+    try {
+        const firstFunctionDefinition = parseFunctionDefinition(q);
+        return [firstFunctionDefinition];
+    } catch (err) {
+        return [];
+    }
+}
+
+// function_definition : 'function' Identifier '(' parameter_list ')' block ;
+function parseFunctionDefinition(q) {
+    parseFunctionKeyword(q);
+    const name = parseIdentifier(q).value;
+    const paramList = parseParamList(q);
+    const body = parseBlock(q);
+
+    return {
+        type :"function-def",
+        name : name,
+        paramList : paramList,
+        body : body
+    }
+}
+
+function parseParamList(q) {
+    const res = [];
+    let curr = q.consume();
+    curr.ensure("symbol", "("); // start with open round bracket
+
+    curr = q.consume();
+    while (!curr.is("symbol", ")")) { // continue until close round bracket
+        res.push(curr); // ignore structure in between
+        curr = q.consume();
+    }
+
+    return res;
+}
+
+function parseBlock(q) {
+    const res = [];
+    let curr = q.consume();
+    curr.ensure("symbol", "{"); // start with open curly bracket
+
+    curr = q.consume();
+    while (!curr.is("symbol", "}")) { // continue until close curly bracket
+        res.push(curr); // ignore structure in between
+        curr = q.consume();
+    }
+
+    return res;
 }
 
 function parseExpression(q) {
@@ -40,8 +88,21 @@ function parseInteger(q) {
     };
 }
 
+function parseIdentifier(q) {
+    const identifier = q.consume();
+    identifier.ensure("identifier");
+    return {
+        type: "identifier",
+        value: identifier.value
+    };
+}
+
 function parseSemicolon(q) {
     q.consume().ensure("symbol", ";");
+}
+
+function parseFunctionKeyword(q) {
+    q.consume().ensure("keyword", "function");
 }
 
 

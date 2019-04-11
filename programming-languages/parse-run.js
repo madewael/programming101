@@ -18,3 +18,4 @@ tryParse("./demo-programs/one2.tpl");
 tryParse("./demo-programs/one3.tpl");
 tryParse("./demo-programs/one4.tpl");
 tryParse("./demo-programs/one5.tpl");
+tryParse("./demo-programs/func2.tpl");
