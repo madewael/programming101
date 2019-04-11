@@ -8,7 +8,7 @@ function tryParse(fn) {
         try {
             console.log(parse(lex(txt)));
         } catch (err) {
-            console.log("ERR:", err.message);
+            console.log("ERR in", fn, ":", err.message);
         }
     });
 }
@@ -17,3 +17,4 @@ tryParse("./demo-programs/one.tpl");
 tryParse("./demo-programs/one2.tpl");
 tryParse("./demo-programs/one3.tpl");
 tryParse("./demo-programs/one4.tpl");
+tryParse("./demo-programs/one5.tpl");

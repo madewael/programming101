@@ -33,9 +33,7 @@ function parseExpression(q) {
 
 function parseInteger(q) {
     const integer = q.consume();
-    if (integer.type !== "integer") {
-        throw new Error(`Parse error: expected an integer but got a token of type ${integer.type}.`);
-    }
+    integer.ensure("integer");
     return {
         type: "integer",
         value: integer.value
@@ -43,11 +41,7 @@ function parseInteger(q) {
 }
 
 function parseSemicolon(q) {
-    const semicolon = q.consume();
-    if (semicolon.type !== "symbol" || semicolon.value !== ";") {
-        throw new Error(`Parse error: expected the symbol ';'  but got ${semicolon.value} of type ${semicolon.type}.`);
-    }
-    return semicolon;
+    q.consume().ensure("symbol", ";");
 }
 
 
