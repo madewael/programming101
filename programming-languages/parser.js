@@ -180,8 +180,32 @@ function parseReturnStatement(q) {
     }
 }
 
+function parseSemicolon(q) {
+    q.consume().ensure("symbol", ";");
+}
+
+function parseFunctionKeyword(q) {
+    q.consume().ensure("keyword", "function");
+}
+
 function parseExpression(q) {
-    return parseInteger(q); // todo: there exist more kinds of expressions
+    const parsers = [
+        parseInteger,
+        parseIdentifier,
+        parseFunctionCall,
+        parseGroupedExpression,
+        parseBinaryExpression,
+        parseUnaryExpression
+    ];
+
+    for (const parser of parsers) {
+        try {
+            return tryParse(parser, q);
+        } catch (err) {
+            // parse error, hence, try next parser ...
+        }
+    }
+    throw new Error("Parser error: un-parsable expression");
 }
 
 function parseInteger(q) {
@@ -202,13 +226,78 @@ function parseIdentifier(q) {
     };
 }
 
-function parseSemicolon(q) {
-    q.consume().ensure("symbol", ";");
+// function_call       : Identifier '(' argument_list ')'                   ;
+function parseFunctionCall(q) {
+    const functionName = parseIdentifier(q).value;
+    const argumentList = parseArgumentList(q);
+
+    return {
+        type: "function-call",
+        functionName: functionName,
+        argumentList: argumentList
+    };
 }
 
-function parseFunctionKeyword(q) {
-    q.consume().ensure("keyword", "function");
+function parseArgumentList(q) {
+    return parseSequence(parseExpression, q, "(", ")", ",");
 }
 
+// grouped_expression  : '(' expression ')'                                 ;
+function parseGroupedExpression(q) {
+    q.consume().ensure("symbol", "(");
+    const expr = parseExpression(q);
+    q.consume().ensure("symbol", ")");
+    return expr; // no need to wrap a grouped expression
+}
+
+
+
+// binary_expression   : expression bin_operator expression                 ;
+function parseBinaryExpression(q) {
+    const left = parseExpression(q);
+    const op = parseBinaryOp(q);
+    const right = parseExpression(q);
+
+    return {
+        type: "binary-expression",
+        left: left,
+        op: op,
+        right: right
+    };
+}
+
+function parseBinaryOp(q) {
+    const op = q.consume();
+    op.ensure("symbol");
+
+    if( ["+", "-", "==", "<=", ">="].includes(op.value)) {
+        return op.value;
+    } else {
+        throw new Error(`Parse error: ${op.value} is not a binary operator.`);
+    }
+}
+
+//unary_expression    : unary_operator expression                          ;
+function parseUnaryExpression(q) {
+    const op = parseUnaryOp(q);
+    const expression = parseExpression(q);
+
+    return {
+        type: "unary-expression",
+        op: op,
+        expression: expression
+    };
+}
+
+function parseUnaryOp(q) {
+    const op = q.consume();
+    op.ensure("symbol");
+
+    if( ["-", "!"].includes(op.value)) {
+        return op.value;
+    } else {
+        throw new Error(`Parse error: ${op.value} is not a unary operator.`);
+    }
+}
 
 module.exports = parse;
