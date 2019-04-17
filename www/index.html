@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Programming 101</title>
 
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/media/favicon.png" />
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
@@ -433,6 +435,162 @@
                           data-src="https://raw.githubusercontent.com/madewael/programming101/f37a8f257feb72ccfb364fd79c90a7e574cddf45/programming-languages/parser.js"></code>
                 </pre>
             </figure>
+
+
+            <p>Now we know how we can tryout one dedicated parser and continue with another if the first one failed,
+                we can create the <code>parseStatement</code> function. If we take a look at the grammar rule, we see
+                that a statement does not really exist, but is rather one of five more specific kinds of statement. In
+                an object oriented language <code>Statement</code> would be modeled as an <em>abstract type</em>.
+                Hence, we can implements <code>parseStatement</code> by trying the dedicated parsers one by one. If
+                one of these parsers is able to create an AST node, the <code>parseStatement</code> returns this
+                node. This endeavour must of course result in an AST node, hence, if none of the parsers is ablet o
+                produce an AST node, we must conclude that we enountered something that is not a statement, hence
+                the parse error.</p>
+
+            <p>The dedicated parsers we need for <code>parseStatement</code> are: <code>parseVariableDefinition</code>,
+                <code>parseVariableAssignment</code>, <code>parseWhileStatement</code>, <code>parseReturnStatement
+                </code>, <code>parseBlock</code>. The last one already exists, but will be refined later one. The
+                first one is ignored for now.</p>
+
+            <figure>
+                <figcaption><code>parseStatement</code> delegates to
+                    <code>parseVariableAssignment</code>, <code>parseWhileStatement</code>, <code>parseReturnStatement
+                    </code>, <code>parseBlock</code>.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="96"
+                          data-to="151"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/8930ff12b40e3379a597dc65705f1c81a3bd7527/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>Now that <code>parseStatement</code> exists, it is possible to improve our implementation of <code>
+                parseBlock</code>. Up until now <code>parseBlock</code> simply checks for <code>{</code> and consumes
+                tokens until it finds a <code>}</code>. In practice, however, we are not interested in a sequence of
+                tokens as body of the block, but rather want a <em>sequence of statements</em>. We can simply parse
+                a <code>{</code>, then keep on parsing actual statements using <code>parseStatement</code>. As soon
+                as this fails, we know we parsed the last available statement, and expect the next token to be the
+                closing curly bracket (<code>}</code>). In order for this to work correctly, do not forget to use
+                <code>tryParse</code> in the loop.</p>
+
+            <figure>
+                <figcaption>The updated <code>parseBlock</code> parser.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="77"
+                          data-to="94"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/8930ff12b40e3379a597dc65705f1c81a3bd7527/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>When implementing <code>parseStatement</code> above, we skipped <code>parseVariableDefinition</code>
+                because it inhibits a peculiarity not found in the other grammar rules: an optional part. The
+                optional part in a variable definition defines the initial value of this variable, it can be
+                <em>present</em> in the form of an expression, or <em>absent</em>. Concretely, we realise this by
+                trying to parse a <code>=</code> followed by an expression. When this fails, we know the optional part
+                is must be empty. We hide this logic by abstracting it away in the function <code>parseOptionally</code>
+                which behaves just like <code>tryParse</code> but <em>returns</em> <code>false</code> instead of
+                <em>throwing a parse error</em> in the event of a failed parse.
+            </p>
+
+            <figure>
+                <figcaption>The dedicated parser <code>parseVariableDefinition</code> has an optional part.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="123"
+                          data-to="140"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/4509dda647505d1a7b97696fdd5474d55050edc0/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <figure>
+                <figcaption><code>parseOptionally</code> behaves like <code>tryParse</code> but <em>returns</em>
+                    <code>false</code> instead of <em>throwing a parse error</em>.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="13"
+                          data-to="19"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/4509dda647505d1a7b97696fdd5474d55050edc0/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>We now update the <code>parseParamList</code> parse to use the same technique as <code>parseBlock
+            </code>, i.e., keep on parsing while putting the results in a list. There is one big difference,
+                however, and it is not <code>()</code> versus <code>{}</code>. Note that a list of statements is
+                just a list of statements. The parameter names in a parameter list, however are separated by
+                <code>,</code>-symbols. We solve this by using one of the possible techniques, that is keeping a
+                flag that remembers whether this is the first parameter or not. This is technically realised by
+                wrapping the <code>parseIdentifier</code> parser.</p>
+
+            <figure>
+                <figcaption>The updated <code>parseParamList</code> uses the same technique as <code>parseBlock</code>.
+                </figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="71"
+                          data-to="96"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/a842be3e198992672c2381726954d655f918e52b/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <p>Besides the the kind of brackets, i.e., <code>()</code> versus <code>{}</code>; and the presence or
+                absence of a <em>separator</em>, <code>parseParamList</code> and <code>parseBlock</code> look very
+                much alike. Later on, when we will be parsing function calls, we will see that the argument list
+                follows a similar pattern. Moreover, <code>parseFunctionDefinitionList</code> also looks very
+                similar: it simply has no start and no stop symbol, neither does it require a separator. Hence, we
+                apply some functional abstraction and introduce and auxiliary parser function <code>parseSequence
+                </code>, which takes the start, stop and separator symbol, and most importantly, a dedicated parser.
+                It returns a list with the resulting AST nodes. The function itself is the most clumsy looking one in
+                the project hitherto, but using <code>parseSequence</code> in <code>parseFunctionDefinitionList
+                </code>, <code>parseBlock</code>, and <code>parseParamList</code> results in rather clean code. Note
+                that <code>parseParamList</code> requires one post-processing step, as we are interested in the
+                values only and not the complete tokes, hence the use of <code>map</code>.
+            </p>
+
+            <figure>
+                <figcaption>The function <code>parseSequence</code> handles all cases where the same dedicated parser
+                    should be called a many times as possible.
+                    .</figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="21"
+                          data-to="54"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/cb0cb6a3960e48ee969b145be17ac99015d0d563/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+            <figure>
+                <figcaption>Using <code>parseSequence</code> in <code>parseFunctionDefinitionList
+                </code>, <code>parseBlock</code>, and <code>parseParamList</code> reduces the lines of code
+                    significantly
+                    .</figcaption>
+                <pre>
+                    <code class="javascript"
+                          data-from="79"
+                          data-to="81"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/cb0cb6a3960e48ee969b145be17ac99015d0d563/programming-languages/parser.js"></code>
+                </pre>
+                <pre>
+                    <code class="javascript"
+                          data-from="103"
+                          data-to="105"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/cb0cb6a3960e48ee969b145be17ac99015d0d563/programming-languages/parser.js"></code>
+                </pre>
+                <pre>
+                    <code class="javascript"
+                          data-from="98"
+                          data-to="101"
+                          data-src="https://raw.githubusercontent.com/madewael/programming101/cb0cb6a3960e48ee969b145be17ac99015d0d563/programming-languages/parser.js"></code>
+                </pre>
+            </figure>
+
+
+
+
 
 
         </section>

@@ -1,6 +1,10 @@
+
+/* https://colorpalettes.net/color-palette-3524/ */
+
+
 body {
     font-family: 'Source Code Pro', monospace;
-
+    color: #010812;
 }
 
 main {
@@ -12,8 +16,8 @@ main {
 aside {
     padding:10px 20px;
     width: 800px;
-    background-color: #4ed99c;
-    color: #eaeaea;
+    background-color: #44586a;
+    color: #a2b4c3;
     font-size: small;
 }
 
@@ -26,7 +30,7 @@ p code {
     margin: 0 2px;
     padding: 0 5px;
     white-space: nowrap;
-    border: 1px solid #eaeaea;
+    border: 1px solid #a2b4c3;
     background-color: #f8f8f8;
     border-radius: 3px;
 }
@@ -35,8 +39,8 @@ figcaption code {
     margin: 0 2px;
     padding: 0 5px;
     white-space: nowrap;
-    border: 1px solid #4a9c63;
-    background-color: #4EBF82;
+    /*border: 1px solid #0b212f;*/
+    background-color: #cdd4db;
     border-radius: 3px;
 }
 
@@ -44,8 +48,8 @@ figcaption code {
 
 figcaption {
     text-align: center;
-    border: 1px solid #eaeaea;
-    background-color: #4ed99c;
+    border: 1px solid #a2b4c3;
+    background-color: #a2b4c3;
     border-radius: 3px;
 }
 
