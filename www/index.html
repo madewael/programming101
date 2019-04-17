@@ -5,7 +5,7 @@
     <title>Programming 101</title>
 
 
-    <link rel="shortcut icon" type="image/x-icon" href="assets/media/favicon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/media/favicon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
@@ -208,13 +208,193 @@
                 you should skip this section and continue reading about <a href="#p01:parsing">parsing</a>.</p>
 
             <h3>Extra Keywords</h3>
-            <p></p>
+
+            <p>By simply adding <code>if</code> and <code>else</code> as keywords to the lexer, we are now able to
+                turn a program with an if-statement into a correct sequence of tokens, i.e., where <code>if</code>
+                and <code>else</code> are recognised as keywords instead of identifiers.</p>
+
+            <figure>
+                <figcaption>Adding new keywords to the list, makes them lexable.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="13"
+      data-to="15"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/6225802884b73b8adb2f49abe6fd50396715dfd8/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
 
             <h3>Multi Character Symbols</h3>
+
+            <p>When we would add <code>%</code> to the list of lexable symbols, the lexer would simply recognise this
+                character as a symbol. Simply adding <code>==</code>, <code>==</code>, and <code>==</code> to the
+                list of symbols, however, is not sufficient to make them lexable. This is because the lexer is to
+                eager to turn characters into tokens. A first step in our lexer extension it to make the lexer a bit
+                more cautious. Instead of eagerly consuming characters from the queue, we will start by peeking. When we
+                encounter a whitespace, we consume it just like before. When we encounter a character that is not-known
+                to
+                be a symbol (last branch of the if), we also consume it right away and push into the auxiliary token
+                buffer. For the first and the last branch, noting actually changed.</p>
+
+            <p>For symbols, however, we introduce a new <em>dedicated lexer</em>, a function whose only purpose is
+                to interpret the current state of a queue as if it starts with a symbol (of unknown length). First
+                note that all new symbols have existing symbols as prefixes. Here, this means that the first
+                character of a all symbols are symbols as well. Here, in this language we can rely on this fact. If
+                this is not the case, the lexer would become even more complex.</p>
+
+
+            <figure>
+                <figcaption>Adding new symbols to the list does not necessarily make them lexable.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="9"
+      data-to="11"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/cfcd6435850dfaff0120689f5d4eb1432e18aad8/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>Making <code>lex</code> more cautious: <code>peek</code> instead of <code>consume</code>.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="27"
+      data-to="46"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/cfcd6435850dfaff0120689f5d4eb1432e18aad8/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <p>We only enter our dedicated lexer in the event of detecting a (prefix of) a symbol. Hence, it is safe to
+                consume the first character in the queue, since it is known to be a symbol. If
+                we add the next character to the first character and we still have a
+                (known)
+                symbol, we have found a two-character symbol. If not, our symbol was one of length one. To check this,
+                wee need to peek again. This technique, first using peek in order to consume conditionally, is
+                called <em>looking ahead</em>. This can extended for symbols of any length by using a <code>while
+                </code> instead of an <code>if</code>. Note that this simple implementation only works is all
+                symbols have another symbol as prefix ...</p>
+
+            <figure>
+                <figcaption>A dedicated lexer for single-character symbols.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="48"
+      data-to="51"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/cfcd6435850dfaff0120689f5d4eb1432e18aad8/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>A dedicated lexer for multi-character symbols.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="48"
+      data-to="56"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/684ff70f797192b49d0537fb5048242751110b4c/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+
             <p></p>
 
             <h3>String Literals</h3>
-            <p></p>
+            <p>The final extension to our lexer is the support for string literals. A string literal starts and ends
+                with <code>"</code>. We could add this as a <em>symbol</em> to our lexer, but actually it is only used
+                to denote the start and end of a string-literal-lexer-token, and has further no meaning for the
+                parser for instance. Furthermore, the hardest thing about lexing a string literal is that most
+                invariants that hold when lexing non-string literals do not hold: whitespaces are not to be ignored,
+                symbols are not supposed to to delimit any token, and keywords hold no meaning. Hence, we introduce a
+                second dedicated lexer, just like we did for symbols, using the same look ahead technique. The
+                dedicated lexer for string literals will prove to be as complex as the lexer for all other items.
+            </p>
+
+            <figure>
+                <figcaption>A new branch in <code>lex</code> to detect and lex strings.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="27"
+      data-to="48"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/a05a35dd49135d22f2d9956c7f213ad954c3066a/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>Strings start with <code>"</code>.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="60"
+      data-to="62"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/a05a35dd49135d22f2d9956c7f213ad954c3066a/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <figure>
+                <figcaption>Lexing a string strings continues from one <code>"</code> to another.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="64"
+      data-to="75"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/a05a35dd49135d22f2d9956c7f213ad954c3066a/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+            <p>This works fine for nice and simple strings, e.q., <code>Hello World.</code>. But lexing a strings
+                such as <code>Hamlet: "To be or not to be, ..."</code>, where <code>"</code> are actually part of
+                the string itself. Many programming languages resort to the technique called <em>escaping</em> where
+                an new symbol is introduced to denote that the next character(s) need to be lexed differently. The
+                symbol we will be using is equally classic as the technique itself: <code>\</code>. Thus, whenever we
+                encounter a
+                <code>\</code> in a string token, we know we should interpret the following differently. We
+                introduced <code>\</code> to be able to lex <code>"</code>, thus a <code>\</code> followed by a
+                <code>"</code> is interpreted as an double quote. This solves the issue for double quotes, but
+                creates an issue for backslashes. The solution is to make backslashes also escaped: <code>\\</code>
+                is to be interpreted as a backslash. Finally, we can piggyback on the escaping to encode/interpreted
+                special characters such as <em>return</em>, or illegal characters such as newline (many
+                languages do not allow newlines are in strings). If we encounter a non-escapable character after
+                <code>\</code>, the lexer will fail.
+            </p>
+
+            <figure>
+                <figcaption>Lexing a string strings using escape(d) characters.
+                </figcaption>
+                <pre>
+<code class="javascript"
+      data-from="64"
+      data-to="93"
+      data-src="https://raw.githubusercontent.com/madewael/programming101/dc84552b93b410ed5c8a6c3f10365d3a650cd846/programming-languages/lexer.js">
+</code>
+</pre>
+            </figure>
+
+
+            <p>Do
+                not
+                confuse the <code>\</code> symbol with the symbols we already know from earlier, which have an
+                actual
+                                meaning in
+                our programming language. What we observe here is that strings actually a sort of
+                <em>(embedded) domain specific language</em> (hosted) in another programming language. The same
+                holds for integers but we where able to hide this complexity behind the abstraction offered to use
+                by JS in the form of the <code>parseInt</code>-function.</p>
+
+            <p>This finalizes our lexer, which turns a sequence of characters into a sequence of tokes: symbols,
+                keywords, strings, integers or identifiers. This sequence is further used as input for the parser,
+                which is discussed in the next chapter.</p>
 
 
         </section>
@@ -233,8 +413,11 @@
                 the grammar rules. Here, we parse a program, hence we expect a bunch of <em>function definitions</em>
                 (zero, one, or more) and a single <em>expression</em>. Each program ends with a <code>;</code> but
                 that is not of any meaning in an AST. Hence the name <em>abstract</em> syntax tree, not all concrete
-                syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;</code> is needed to detect the end of the expression. What remains is to implement functions that
-                can parse (lists) of function definitions, that can parse expressions, and that can parse a <code>;</code>.</p>
+                syntax elements need to be included, only those that still matter. In the concrete syntax the
+                <code>;</code> is needed to detect the end of the expression. What remains is to implement functions
+                that
+                can parse (lists) of function definitions, that can parse expressions, and that can parse a
+                <code>;</code>.</p>
 
 
             <figure>
@@ -563,7 +746,8 @@
             <figure>
                 <figcaption>The function <code>parseSequence</code> handles all cases where the same dedicated parser
                     should be called a many times as possible.
-                    .</figcaption>
+                    .
+                </figcaption>
                 <pre>
                     <code class="javascript"
                           data-from="21"
@@ -576,7 +760,8 @@
                 <figcaption>Using <code>parseSequence</code> in <code>parseFunctionDefinitionList
                 </code>, <code>parseBlock</code>, and <code>parseParamList</code> reduces the lines of code
                     significantly
-                    .</figcaption>
+                    .
+                </figcaption>
                 <pre>
                     <code class="javascript"
                           data-from="79"
@@ -598,10 +783,6 @@
             </figure>
 
             <p>We know have a parser for the lexer defined before <a href="#p01:lexing-ext">here</a>.</p>
-
-
-
-
 
 
         </section>
