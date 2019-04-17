@@ -61,12 +61,30 @@ function isStartOfString(c) {
     return ['"'].includes(c);
 }
 
+function isEscapeChar(c) {
+    return ['\\'].includes(c);
+}
+
+function escapeChar(c) {
+    switch (c) {
+        case '"': return '"';
+        case '\\': return '\\';
+        case 'n' : return '\n';
+        case 'r' : return '\r';
+        case 't' : return '\t';
+        default: throw new Error(`Lexing error: ${c} is not an escapable character.`);
+    }
+}
+
 function lexString(q) {
     let start = q.consume();
     let str = "";
 
     let next = q.consume();
     while (next !== start) {
+        if (isEscapeChar(next)) {
+            next = escapeChar(q.consume());
+        }
         str += next;
         next = q.consume();
     }

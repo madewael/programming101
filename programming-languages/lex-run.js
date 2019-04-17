@@ -24,8 +24,12 @@ fs.readFile("./demo-programs/if.tpl", "utf8", (err, txt) => {
 
 fs.readFile("./demo-programs/comp.tpl", "utf8", (err, txt) => {
     console.log(lex(txt));
-});*/
+});
 
 fs.readFile("./demo-programs/str.tpl", "utf8", (err, txt) => {
+    console.log(lex(txt));
+});*/
+
+fs.readFile("./demo-programs/str2.tpl", "utf8", (err, txt) => {
     console.log(lex(txt));
 });
