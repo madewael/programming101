@@ -35,7 +35,9 @@ function lex(txt) {
             ts.endCurrentToken();
         } else if (isSymbol(next)) {
             ts.pushToken(lexSymbol(q));
-        } else {
+        } else if (isStartOfString(next)){
+            ts.pushToken(lexString(q))
+        } {
             ts.pushChar(q.consume());
         }
     }
@@ -55,5 +57,21 @@ function lexSymbol(q) {
     return new Token("symbol", symbol);
 }
 
+function isStartOfString(c) {
+    return ['"'].includes(c);
+}
+
+function lexString(q) {
+    let start = q.consume();
+    let str = "";
+
+    let next = q.consume();
+    while (next !== start) {
+        str += next;
+        next = q.consume();
+    }
+
+    return new Token("string", str);
+}
 
 module.exports = lex;
