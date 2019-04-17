@@ -37,7 +37,7 @@ function lex(txt) {
             ts.pushToken(lexSymbol(q));
         } else if (isStartOfString(next)){
             ts.pushToken(lexString(q))
-        } {
+        } else {
             ts.pushChar(q.consume());
         }
     }
