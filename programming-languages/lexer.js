@@ -7,7 +7,7 @@ function isWhiteSpace(c) {
 }
 
 function isSymbol(c) {
-    return ["{", "}", "(", ")", ",", ";", "=", "+", "-"].includes(c);
+    return ["{", "}", "(", ")", ",", ";", "=", "+", "-", "==", "<=", ">="].includes(c);
 }
 
 function isKeyword(str) {
@@ -29,13 +29,14 @@ function lex(txt) {
     let ts = new TokenBuffer(determineTokenType);
 
     while (q.hasMore()) {
-        let next = q.consume();
+        let next = q.peek();
         if (isWhiteSpace(next)) {
+            q.consume();
             ts.endCurrentToken();
         } else if (isSymbol(next)) {
-            ts.pushToken(new Token("symbol", next));
+            ts.pushToken(lexSymbol(q));
         } else {
-            ts.pushChar(next);
+            ts.pushChar(q.consume());
         }
     }
 
@@ -43,5 +44,11 @@ function lex(txt) {
 
     return ts.tokens;
 }
+
+function lexSymbol(q) {
+    let symbol = q.consume();
+    return new Token("symbol", symbol);
+}
+
 
 module.exports = lex;
