@@ -47,6 +47,11 @@ function lex(txt) {
 
 function lexSymbol(q) {
     let symbol = q.consume();
+
+    while (q.hasMore() && isSymbol(symbol + q.peek())) {
+        symbol += q.consume();
+    }
+
     return new Token("symbol", symbol);
 }
 
