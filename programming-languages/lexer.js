@@ -7,7 +7,7 @@ function isWhiteSpace(c) {
 }
 
 function isSymbol(c) {
-    return ["{", "}", "(", ")", ",", ";", "=", "+", "-", "==", "<=", ">="].includes(c);
+    return ["{", "}", "(", ")", ",", ";", "=", "+", "-", "<",">", "==","!", "!=", "<=", ">="].includes(c);
 }
 
 function isKeyword(str) {

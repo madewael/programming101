@@ -189,13 +189,16 @@ function parseFunctionKeyword(q) {
 }
 
 function parseExpression(q) {
+    return parseMaybeBinaryExpression(q);
+}
+
+function parseNonBinaryExpression(q) {
     const parsers = [
-        parseInteger,
-        parseIdentifier,
+        parseInteger, // integers is not longer a prefix
         parseFunctionCall,
         parseGroupedExpression,
-        parseBinaryExpression,
-        parseUnaryExpression
+        parseUnaryExpression,
+        parseIdentifier // identifier is a prefix of function call
     ];
 
     for (const parser of parsers) {
@@ -253,17 +256,23 @@ function parseGroupedExpression(q) {
 
 
 // binary_expression   : expression bin_operator expression                 ;
-function parseBinaryExpression(q) {
-    const left = parseExpression(q);
-    const op = parseBinaryOp(q);
-    const right = parseExpression(q);
+function parseMaybeBinaryExpression(q) {
+    const left = parseNonBinaryExpression(q);
+    try {
+        const op = tryParse(parseBinaryOp, q);
+        const right = parseExpression(q);
 
-    return {
-        type: "binary-expression",
-        left: left,
-        op: op,
-        right: right
-    };
+        return {
+            type: "binary-expression",
+            left: left,
+            op: op,
+            right: right
+        };
+    } catch (err) {
+        // failed to parse an operator, must be a non-binary expression
+        return left;
+    }
+
 }
 
 function parseBinaryOp(q) {
@@ -280,7 +289,7 @@ function parseBinaryOp(q) {
 //unary_expression    : unary_operator expression                          ;
 function parseUnaryExpression(q) {
     const op = parseUnaryOp(q);
-    const expression = parseExpression(q);
+    const expression = parseNonBinaryExpression(q); // because of precedence
 
     return {
         type: "unary-expression",

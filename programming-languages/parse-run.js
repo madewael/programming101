@@ -8,7 +8,8 @@ function tryParse(fn) {
         try {
             console.log(JSON.stringify(parse(lex(txt)), null, 2));
         } catch (err) {
-            console.log("ERR in", fn, ":", err.message);
+
+            console.log("ERR in", fn, ":", err);
         }
     });
 }
@@ -19,6 +20,7 @@ function tryParse(fn) {
 //tryParse("./demo-programs/one4.tpl");
 //tryParse("./demo-programs/one5.tpl");
 //tryParse("./demo-programs/func2.tpl");
-tryParse("./demo-programs/func4.tpl");
+//tryParse("./demo-programs/func4.tpl");
 //tryParse("./demo-programs/while2.tpl");
 //tryParse("./demo-programs/var.tpl");
+tryParse("./demo-programs/binExpr.tpl");
