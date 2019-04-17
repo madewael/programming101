@@ -11,7 +11,7 @@ function isSymbol(c) {
 }
 
 function isKeyword(str) {
-    return ["function", "let", "while", "return"].includes(str);
+    return ["function", "let", "while", "return", "if", "else"].includes(str);
 }
 
 function determineTokenType(str) {

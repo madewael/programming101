@@ -16,3 +16,7 @@ fs.readFile("./demo-programs/while.tpl", "utf8", (err, txt) => {
 fs.readFile("./demo-programs/one.tpl", "utf8", (err, txt) => {
     console.log(lex(txt));
 });
+
+fs.readFile("./demo-programs/if.tpl", "utf8", (err, txt) => {
+    console.log(lex(txt));
+});

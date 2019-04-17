@@ -198,7 +198,7 @@
                 </code></pre>
             </figure>
 
-            <h2>Extending the Lexer</h2>
+            <h2 id="p01:lexing-ext">Extending the Lexer</h2>
 
             <p>You can continue reading here if you want the expand the functionality of the lexer a bit more. We
                 will be adding extra keywords which requires almost no work. We will add support for symbols that
@@ -206,6 +206,17 @@
                 support for string literals, which will prove to be the most difficult endeavour of the three. If you
                 want to get your first programming language up, and more importantly, running as soon as possible,
                 you should skip this section and continue reading about <a href="#p01:parsing">parsing</a>.</p>
+
+            <h3>Extra Keywords</h3>
+            <p></p>
+
+            <h3>Multi Character Symbols</h3>
+            <p></p>
+
+            <h3>String Literals</h3>
+            <p></p>
+
+
         </section>
 
         <section data-type="chapter" id="p01:parsing">
@@ -222,10 +233,8 @@
                 the grammar rules. Here, we parse a program, hence we expect a bunch of <em>function definitions</em>
                 (zero, one, or more) and a single <em>expression</em>. Each program ends with a <code>;</code> but
                 that is not of any meaning in an AST. Hence the name <em>abstract</em> syntax tree, not all concrete
-                syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;
-                </code> is needed to detect the end of the expression. What remains is to implement functions that
-                can parse (lists) of function definitions, that can parse expressions, and that can parse a <code>;
-                </code>.</p>
+                syntax elements need to be included, only those that still matter. In the concrete syntax the <code>;</code> is needed to detect the end of the expression. What remains is to implement functions that
+                can parse (lists) of function definitions, that can parse expressions, and that can parse a <code>;</code>.</p>
 
 
             <figure>
@@ -587,6 +596,8 @@
                           data-src="https://raw.githubusercontent.com/madewael/programming101/cb0cb6a3960e48ee969b145be17ac99015d0d563/programming-languages/parser.js"></code>
                 </pre>
             </figure>
+
+            <p>We know have a parser for the lexer defined before <a href="#p01:lexing-ext">here</a>.</p>
 
 
 
