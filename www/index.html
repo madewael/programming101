@@ -22,7 +22,7 @@
         executable toy version. Hence, the focus is always understandability over completeness.</p>
 
     <p>The first part tackles <em>programming languages</em>. Foremost because it covers by background and education,
-        but also because it form the basics for further articles. When we build a <em>relational database</em> in Part
+        but also because it forms the basics for further articles. When we build a <em>relational database</em> in Part
         II we will want to use <em>SQL</em> to query it. Well, SQL is a <em>domain specific programming language</em>
         (DSL) which will need a parser and an interpreter...</p>
 
@@ -33,10 +33,10 @@
             <h1>Intro</h1>
 
             <p>In Part I: Programming Languages we will be building an extremely simple programming language from the
-                ground up. The goal is to turn a sequence of characters, the <em>source code</em> into a useful
+                ground up. The goal is to turn a sequence of characters, the <em>source code</em>, into a useful
                 computation.</p>
 
-            <p>A first step, is to turn source code into a sequence of tokens, much like humans can detect sentences in
+            <p>A first step is to turn source code into a sequence of tokens, much like humans can detect sentences in
                 a text and words in a sentence. This is called lexing and is done by a lexer (<a href="#p01:lexing">see
                     lexing</a>).</p>
 
@@ -45,11 +45,11 @@
                 least contain a subject (word or words) and a predicate (word or words). This is called parsing and is
                 done by a parser (<a href="#p01:parsing">see parsing</a>).</p>
 
-            <p>The third step depends on the kind of language.From an execution point of view, there are two kinds of
+            <p>The third step depends on the kind of language. From an execution point of view, there are two kinds of
                 languages: <em>interpreted languages</em> and <em>compiled languages</em>. An interpreted language uses
                 an <em>interpreter</em> to directly perform the computation (<a href="#p01:interpretation">see
                     interpretation</a>). A compiled language relies on a <em>compiler</em> to create new (executable)
-                code (<a href="#p01:compilation">see compiling</a>). Both, the interpreter and the compiler needs to get
+                code (<a href="#p01:compilation">see compiling</a>). Both the interpreter and the compiler need to get
                 their hands on an abstract syntax tree (AST).</p>
 
             <figure>
@@ -100,7 +100,7 @@
 
             <p>In our first iteration the lexer will not support symbols with a length larger than 1 (e.g.,
                 <code>==</code>), or string literals. We add this functionality in a second pass. If we consider the
-                grammar with theses simplifications we obtain the following symbols: <code>; , ( ) = { } + - * / % &lt;
+                grammar with these simplifications we obtain the following symbols: <code>; , ( ) = { } + - * / % &lt;
                     &gt; !</code>. Any of these symbols is always a token because they are not supposed to appear any
                 where else: not in keywords, not in integers, not in identifiers. The same holds for whitespaces <code>\t</code>,
                 <code>\n</code>, and <code>\r</code>, but these are also ignored.</p>
@@ -233,10 +233,10 @@
                 list of symbols, however, is not sufficient to make them lexable. This is because the lexer is to
                 eager to turn characters into tokens. A first step in our lexer extension it to make the lexer a bit
                 more cautious. Instead of eagerly consuming characters from the queue, we will start by peeking. When we
-                encounter a whitespace, we consume it just like before. When we encounter a character that is not-known
-                to
+                encounter a whitespace, we consume it just like before. When we encounter a character that is known
+                not to
                 be a symbol (last branch of the if), we also consume it right away and push into the auxiliary token
-                buffer. For the first and the last branch, noting actually changed.</p>
+                buffer. For the first and the last branch, nothing actually changed.</p>
 
             <p>For symbols, however, we introduce a new <em>dedicated lexer</em>, a function whose only purpose is
                 to interpret the current state of a queue as if it starts with a symbol (of unknown length). First
@@ -274,7 +274,7 @@
                 we add the next character to the first character and we still have a
                 (known)
                 symbol, we have found a two-character symbol. If not, our symbol was one of length one. To check this,
-                wee need to peek again. This technique, first using peek in order to consume conditionally, is
+                we need to peek again. This technique, first using peek in order to consume conditionally, is
                 called <em>looking ahead</em>. This can extended for symbols of any length by using a <code>while
                 </code> instead of an <code>if</code>. Note that this simple implementation only works is all
                 symbols have another symbol as prefix ...</p>
@@ -405,7 +405,7 @@
                 which is called the <em>abstract syntax tree</em> (AST). While doing so, the parser verifies whether
                 the input has a correct structure, i.e., checking if the input matches the grammar.</p>
 
-            <p>As state above, the input of a parser is a sequence of tokens. The result should be an AST that
+            <p>As stated above, the input of a parser is a sequence of tokens. The result should be an AST that
                 represents the full program. The main function <code>parse</code> turns the sequence of tokens into a
                 queue of tokens and delegates to the dedicated parser <code>parseProgram</code>. For now the
                 dedicated parser <code>parseProgram</code> does not do much, except show the structure of all
@@ -440,12 +440,12 @@
             <p>A more important update is that of the dedicated parser <code>parseProgram</code> which now delegates
                 its work to an auxiliary parser and two dedicated parsers: <code>parseFunctionDefinitionList</code>,
                 <code>parseExpression </code>, and <code>parseSemicolon</code>, respectively. Then, it combines the
-                results into a new AST node that represents the complete program. Not that the expected semicolon is
+                results into a new AST node that represents the complete program. Note that the expected semicolon is
                 effectively parsed, but it is ignored afterwards. Finally, we check if the queue is empty, if not, we
                 have found an illegal program and we throw a parse error.</p>
 
             <figure>
-                <figcaption>The the dedicated parser <code>parseProgram</code> delegates its work and produces an
+                <figcaption>The dedicated parser <code>parseProgram</code> delegates its work and produces an
                     AST-node for the complete program.
                 </figcaption>
                 <pre>
@@ -464,9 +464,9 @@
                 lexer token, and it has to be of type <code>integer</code>. If this is the case, we transform the lexer
                 token in an AST node of type <code>integer</code>. The value we assign to this node is the value we
                 obtain, from the token. Conceptually this is a big step, in practice almost nothing changes here.
-                Finally, it is important to note that out (dedicated) parser <em>throws a parse error</em>. When you
+                Finally, it is important to note that our (dedicated) parser <em>throws a parse error</em>. When you
                 want (or need) to parse an integer and you find something else, it is useless for <em>this
-                    (dedicated) parser</em> to continue. We will see later how en when we can recover from parse errors.
+                    (dedicated) parser</em> to continue. We will see later how and when we can recover from parse errors.
             </p>
 
             <figure>
@@ -539,7 +539,7 @@
                 anything between the first open and close brackets it encounters (round or curly), they ignore the
                 actual structure and return a simple list of un-parsed tokens. Hence, the only way to make them fail
                 is by having an open bracket that is never closed. In this case the queue will run out of tokens and
-                trow a parse error.</p>
+                throw a parse error.</p>
 
             <figure>
                 <figcaption><code>parseParamList</code> and <code>parseBlock</code> return the list of tokens between
@@ -553,7 +553,7 @@
                 </pre>
             </figure>
 
-            <p>The grammar, however, states that programs with a list of these function
+            <p>The grammar, however, states that programs have a list of these function
                 definitions. Hence, we could use <code>parseFunctionDefinition</code> to parse the first such
                 definition and return it as an element is a list. If there is no function definition, the parse would
                 fail because it expects to find the keyword <code>function</code> but will find an <code>integer</code>
@@ -575,7 +575,7 @@
 
             <p>When we run our current parser of some demo programs, we see that it works fine for programs that
                 have exactly one function definition followed by a literal integer as expression. However, we expected
-                our parser to also accept the programs it accepted before, i.e., the programs that cosnist of a
+                our parser to also accept the programs it accepted before, i.e., the programs that consist of a
                 single literal integer without any functions. We observe, however, that parsing this integer fails.
                 Even though we know the program is correct, we still get the following error: <em>Parse error:
                     expected a integer but got a symbol.</em> The parse error thus occurs during the execution of
@@ -589,7 +589,7 @@
                 token from the queue: the integer. Because <code>parseFunctionDefinition</code> expected the keyword
                 <code>function</code> but received an <code>integer</code>-token, it fails fast. While <code>
                     parseFunctionDefinitionList</code> is made to recover from this expected parse error, the harm is
-                already doe: the queue was changed and the integer was consumed, and is never to be found again.</p>
+                already done: the queue was changed and the integer was consumed, and is never to be found again.</p>
 
             <p>A possible solution to this problem is to anticipate the destruction of the queue in those cases
                 where a parse error is to be expected. If we where to copy the contents of the queue before parsing,
@@ -635,13 +635,13 @@
                 an object oriented language <code>Statement</code> would be modeled as an <em>abstract type</em>.
                 Hence, we can implements <code>parseStatement</code> by trying the dedicated parsers one by one. If
                 one of these parsers is able to create an AST node, the <code>parseStatement</code> returns this
-                node. This endeavour must of course result in an AST node, hence, if none of the parsers is ablet o
-                produce an AST node, we must conclude that we enountered something that is not a statement, hence
+                node. This endeavour must of course result in an AST node, hence, if none of the parsers is able to
+                produce an AST node, we must conclude that we encountered something that is not a statement, hence
                 the parse error.</p>
 
             <p>The dedicated parsers we need for <code>parseStatement</code> are: <code>parseVariableDefinition</code>,
                 <code>parseVariableAssignment</code>, <code>parseWhileStatement</code>, <code>parseReturnStatement
-                </code>, <code>parseBlock</code>. The last one already exists, but will be refined later one. The
+                </code>, <code>parseBlock</code>. The last one already exists, but will be refined later on. The
                 first one is ignored for now.</p>
 
             <figure>
@@ -657,8 +657,8 @@
                 </pre>
             </figure>
 
-            <p>Now that <code>parseStatement</code> exists, it is possible to improve our implementation of <code>
-                parseBlock</code>. Up until now <code>parseBlock</code> simply checks for <code>{</code> and consumes
+            <p>Now that <code>parseStatement</code> exists, it is possible to improve our implementation of
+                <code>parseBlock</code>. Up until now <code>parseBlock</code> simply checks for <code>{</code> and consumes
                 tokens until it finds a <code>}</code>. In practice, however, we are not interested in a sequence of
                 tokens as body of the block, but rather want a <em>sequence of statements</em>. We can simply parse
                 a <code>{</code>, then keep on parsing actual statements using <code>parseStatement</code>. As soon
@@ -710,8 +710,7 @@
                 </pre>
             </figure>
 
-            <p>We now update the <code>parseParamList</code> parse to use the same technique as <code>parseBlock
-            </code>, i.e., keep on parsing while putting the results in a list. There is one big difference,
+            <p>We now update the <code>parseParamList</code> parse to use the same technique as <code>parseBlock</code>, i.e., keep on parsing while putting the results in a list. There is one big difference,
                 however, and it is not <code>()</code> versus <code>{}</code>. Note that a list of statements is
                 just a list of statements. The parameter names in a parameter list, however are separated by
                 <code>,</code>-symbols. We solve this by using one of the possible techniques, that is keeping a
@@ -729,16 +728,14 @@
                 </pre>
             </figure>
 
-            <p>Besides the the kind of brackets, i.e., <code>()</code> versus <code>{}</code>; and the presence or
+            <p>Besides the kind of brackets, i.e., <code>()</code> versus <code>{}</code>; and the presence or
                 absence of a <em>separator</em>, <code>parseParamList</code> and <code>parseBlock</code> look very
                 much alike. Later on, when we will be parsing function calls, we will see that the argument list
                 follows a similar pattern. Moreover, <code>parseFunctionDefinitionList</code> also looks very
                 similar: it simply has no start and no stop symbol, neither does it require a separator. Hence, we
-                apply some functional abstraction and introduce and auxiliary parser function <code>parseSequence
-                </code>, which takes the start, stop and separator symbol, and most importantly, a dedicated parser.
+                apply some functional abstraction and introduce an auxiliary parser function <code>parseSequence</code>, which takes the start, stop and separator symbol, and most importantly, a dedicated parser.
                 It returns a list with the resulting AST nodes. The function itself is the most clumsy looking one in
-                the project hitherto, but using <code>parseSequence</code> in <code>parseFunctionDefinitionList
-                </code>, <code>parseBlock</code>, and <code>parseParamList</code> results in rather clean code. Note
+                the project hitherto, but using <code>parseSequence</code> in <code>parseFunctionDefinitionList</code>, <code>parseBlock</code>, and <code>parseParamList</code> results in rather clean code. Note
                 that <code>parseParamList</code> requires one post-processing step, as we are interested in the
                 values only and not the complete tokes, hence the use of <code>map</code>.
             </p>
@@ -782,7 +779,7 @@
                 </pre>
             </figure>
 
-            <p>We know have a parser for the lexer defined before <a href="#p01:lexing-ext">here</a>.</p>
+            <p>We now have a parser for the lexer defined before <a href="#p01:lexing-ext">here</a>.</p>
 
 
         </section>
